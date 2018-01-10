@@ -77,9 +77,9 @@ class turnitintooltwo_view {
         $PAGE->requires->jquery_plugin('ui');
         $PAGE->requires->jquery_plugin('turnitintooltwo-dataTables', 'mod_turnitintooltwo');
         $PAGE->requires->jquery_plugin('turnitintooltwo-dataTables_plugins', 'mod_turnitintooltwo');
-        $PAGE->requires->jquery_plugin('turnitintooltwo-turnitintooltwo', 'mod_turnitintooltwo');
-        $PAGE->requires->jquery_plugin('turnitintooltwo-turnitintooltwo_extra', 'mod_turnitintooltwo');
-        $PAGE->requires->jquery_plugin('turnitintooltwo-turnitintooltwo_settings', 'mod_turnitintooltwo');
+        $PAGE->requires->js('/mod/turnitintooltwo/jquery/turnitintooltwo.min.js');
+        $PAGE->requires->js('/mod/turnitintooltwo/jquery/turnitintooltwo_extra.min.js');
+        $PAGE->requires->js('/mod/turnitintooltwo/jquery/turnitintooltwo_settings.min.js');
         $PAGE->requires->jquery_plugin('turnitintooltwo-datatables_columnfilter', 'mod_turnitintooltwo');
         $PAGE->requires->jquery_plugin('turnitintooltwo-colorbox', 'mod_turnitintooltwo');
         $PAGE->requires->jquery_plugin('turnitintooltwo-cookie', 'mod_turnitintooltwo');
