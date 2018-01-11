@@ -255,6 +255,11 @@ if ($ADMIN->fulltree) {
                                                     0, $ynoptions
                                                 ));
 
+    $settings->add(new admin_setting_configtext('turnitintooltwo/courseexpiry',
+                                                    get_string('turnitinsettingscourseexpiry', 'turnitintooltwo'),
+                                                    get_string('turnitinsettingscourseexpiry_desc', 'turnitintooltwo'),
+                                                    '', PARAM_TEXT));
+
     // Following are values for student privacy settings.
     $settings->add(new admin_setting_heading('turnitintooltwo_privacy', get_string('studentdataprivacy', 'turnitintooltwo'),
                        get_string('studentdataprivacy_desc', 'turnitintooltwo')));

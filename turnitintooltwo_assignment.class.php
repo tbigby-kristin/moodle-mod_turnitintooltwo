@@ -350,6 +350,24 @@ class turnitintooltwo_assignment {
         $tiititle = $this->truncate_title( $course->fullname, TURNITIN_COURSE_TITLE_LIMIT, $coursetype );
         $class->setTitle( $tiititle );
 
+        //Figure out and set End Date of class
+        $courseexpirysetting = get_config("turnitintooltwo","courseexpiry");
+        // Check for a non-empty setting, proceed only if non-empty
+        if(isset($courseexpirysetting) && !empty(trim($courseexpirysetting))) {
+            $courseexpirysetting = $this->replace_upcoming($courseexpirysetting);
+            //Check that the course expiry setting, after replace_upcoming()
+            //  is valid
+            // If valid, a timestamp is generated
+            // If invalid, false is returned, leave expiry to the Turnitin API
+            if(($expiry_timestamp = strtotime($courseexpirysetting)) !== false) {
+                $expirydate = gmdate("c", $expiry_timestamp);
+
+                //Set the Turnitin API to use our expiry date
+                $class->setEndDate($expirydate);
+            }
+        }
+        //Else - don't set an End Date and leave it to Turnitin API
+
         try {
             $response = $turnitincall->createClass($class);
             $newclass = $response->getClass();
@@ -2017,5 +2035,32 @@ class turnitintooltwo_assignment {
 
             $DB->update_record("turnitintooltwo_parts", $tiipart);
         }
+    }
+
+    /**
+     * Handle the text 'upcoming' in a 'strtotime()' input to give the functionality of
+     * having a 'next year' date if the date has already passed.
+     * Eg. if today is 1 July 2017, and input is "30 June upcoming", replace 'upcoming'
+     *     with 'next year' so that the strtotime() output produces 30 June 2018.
+     *     But if today is 1 June 2017, and input is "30 June upcoming", replace 'upcoming'
+     *     with blank so that the strtotime() output produces 30 June 2017.
+     *
+     * @param string $input The strtotime() style input for translation
+     * @return string The strtotime() style input translated to include 'next year' or not
+     */
+    public static function replace_upcoming($input) {
+        //If 'upcoming' (case insensitive) is not in the input, just return the input
+        if(stripos($input,"upcoming") === false) return $input;
+        
+        //Else: we may need to replace upcoming with next year, or we may need to strip it
+        //  - depending on whether the date has passed this year or not
+        //Borrowed from https://stackoverflow.com/a/22095068/2094249
+        $today = mktime(0,0,0);
+        $nonupcomingtime  = strtotime(str_ireplace("upcoming","",$input)); //The time with 'upcoming' removed
+        
+        if ($nonupcomingtime < $today) 
+            return str_ireplace("upcoming","next year",$input); //Return the original input with 'next year' instead of 'upcoming'
+        else
+            return str_ireplace("upcoming","",$input); //Return the original input with nothing instead of 'upcoming'
     }
 }
